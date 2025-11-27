@@ -68,3 +68,47 @@
 
 
 <script>
+// Accesibility and semantic: ARIA labels added where needed
+const API = 'https://fakestoreapi.com/products';
+const productsRow = document.getElementById('productsRow');
+const searchInput = document.getElementById('search');
+const cartCountEl = document.getElementById('cartCount');
+const cartListEl = document.getElementById('cartList');
+const cartTotalEl = document.getElementById('cartTotal');
+
+
+// Modal elements
+const productModal = new bootstrap.Modal(document.getElementById('productModal'));
+const modalTitle = document.getElementById('modalTitle');
+const modalDesc = document.getElementById('modalDesc');
+const modalPrice = document.getElementById('modalPrice');
+const modalImage = document.getElementById('modalImage');
+const modalAddBtn = document.getElementById('modalAddBtn');
+
+
+// Offcanvas
+const cartOffcanvasEl = document.getElementById('cartOffcanvas');
+const cartOffcanvas = new bootstrap.Offcanvas(cartOffcanvasEl);
+
+
+let allProducts = [];
+let currentProduct = null;
+
+
+// LocalStorage helpers
+const CART_KEY = 'mi_tienda_cart_v1';
+function readCart(){
+try{
+return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+}catch(e){return []}
+}
+function writeCart(cart){
+localStorage.setItem(CART_KEY, JSON.stringify(cart));
+renderCart();
+}
+
+
+// Fetch products
+async function loadProducts(){
+try{
+const res = await fetch(API);
